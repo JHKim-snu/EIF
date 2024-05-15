@@ -54,19 +54,21 @@ def main():
             TL_Y = int(bbox[1])
             BR_X = int(bbox[2])
             BR_Y = int(bbox[3])
-            PL_X = int(bbox[4])
-            PL_Y = int(bbox[5])
+
+            target_action = bbox[-1]
+            
             # Visualize received bbox on input image
             # cv_img = cv2.rectangle(cv_img, (TL_X, TL_Y), (BR_X, BR_Y), (0, 0, 255))
             # cv_img = cv2.circle(cv_img, (PL_X, PL_Y), 8, (0, 255, 0), -1)
             # cv2.imwrite('result/vg_{}.png'.format(idx), cv_img)
-            print("Pick bbox: {} {} {} {}".format(TL_X, TL_Y, BR_X, BR_Y))
-            print("Place coordinate: {} {}".format(PL_X, PL_Y))
-            # Manipulation (Pick-n-Place)
+            print("target bbox: {} {} {} {}".format(TL_X, TL_Y, BR_X, BR_Y))
+            
+            
+            # Manipulation 
 
             point = [int((TL_X + BR_X) / 2), int((TL_Y + BR_Y) / 2)]
-            print("target pick point: {}".format(point))
-            print("image resolusion: {}".format(color_image.shape))
+            # print("target pick point: {}".format(point))
+            # print("image resolusion: {}".format(color_image.shape))
             tx, ty, tz = (0, 0, 0)
             while tx == 0 and ty == 0 and tz == 0:
                 cv2.circle(
@@ -80,7 +82,19 @@ def main():
 
                 print("point based on the camera is ({},{},{})".format(tx, ty, tz))
 
-            agent.pick(x=tx, y=ty, z=tz)
+            # which action to take?
+            if target_action == "PickObject":
+                agent.pick(x=tx, y=ty, z=tz)
+            elif target_action == "PutObject":
+                agent.place(x=tx, y=ty, z=tz)
+            elif target_action == "OpenObject":
+                agent.open(x=tx, y=ty, z=tz)
+            elif target_action == "CloseObject":
+                agent.close(x=tx, y=ty, z=tz)
+            elif target_action == "PushObject":
+                agent.push(x=tx, y=ty, z=tz)
+            else:
+                print("Undefined Action: {}".format(target_action))
 
             agent.to_camera_pose()
             idx += 1
