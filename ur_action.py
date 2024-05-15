@@ -44,7 +44,7 @@ class realsense:
 # left up is (0,0), right is x , down is y
 
 
-class grasp:
+class agent:
     def __init__(self):
         self.robot = urx.Robot("192.168.1.117")
         self.robot.set_tcp((0, 0, 0, 0, 0, 0))
@@ -238,6 +238,18 @@ class grasp:
         self.finger_close()
         self.move_gripper([0, 0, 0.2, 0, 0, 0, 0])
 
+    def place(self):
+        return
+
+    def open(self):
+        return
+
+    def close(self):
+        return
+
+    def push(self):
+        return
+        
     def shutdown_robot(self):
         self.robot.close()
         return
