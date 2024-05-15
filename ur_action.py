@@ -238,17 +238,115 @@ class agent:
         self.finger_close()
         self.move_gripper([0, 0, 0.2, 0, 0, 0, 0])
 
-    def place(self):
+    def place(
+        self, x, y, z
+    ):  # x,y,z has a base on the camera. You MUST convert to the robot base
+        self.to_camera_pose()
+        coord_to_cam = np.asarray([x, y, z])
+        trans = self.robot.get_orientation()
+        tool_pose = self.robot.get_pos()
+
+        cam_len = 0.075
+
+        transnp = np.array([trans[2], -trans[1], trans[0]]).T
+
+        del_cam = np.matmul(transnp, np.array([0, 0, cam_len]).reshape(-1, 1))
+
+        cam_pose = np.array(
+            [
+                tool_pose[0] + del_cam[0],
+                tool_pose[1] + del_cam[1],
+                tool_pose[2] + del_cam[2],
+            ]
+        ).squeeze()
+        # print(trans)
+
+        trans_inverse = np.linalg.inv(transnp)
+        x, y, z = np.matmul(transnp, coord_to_cam.reshape(-1, 1)).squeeze() + cam_pose
+
+        print(x, y, z)
+        
+        if z < 0.03:
+            z = 0.03
+        self.move_end_effector([x - 0.03, y, z + 0.1])
+        self.finger_open()
+        self.move_gripper([0, 0, 0.2, 0, 0, 0, 0])
         return
 
-    def open(self):
-        return
+    def open(
+        self, x, y, z
+    ):  # x,y,z has a base on the camera. You MUST convert to the robot base
+        self.to_camera_pose()
+        coord_to_cam = np.asarray([x, y, z])
+        trans = self.robot.get_orientation()
+        tool_pose = self.robot.get_pos()
+
+        cam_len = 0.075
+
+        transnp = np.array([trans[2], -trans[1], trans[0]]).T
+
+        del_cam = np.matmul(transnp, np.array([0, 0, cam_len]).reshape(-1, 1))
+
+        cam_pose = np.array(
+            [
+                tool_pose[0] + del_cam[0],
+                tool_pose[1] + del_cam[1],
+                tool_pose[2] + del_cam[2],
+            ]
+        ).squeeze()
+        # print(trans)
+
+        trans_inverse = np.linalg.inv(transnp)
+        x, y, z = np.matmul(transnp, coord_to_cam.reshape(-1, 1)).squeeze() + cam_pose
+
+        print(x, y, z)
+        
+        if z < 0.03:
+            z = 0.03
+        self.finger_open()
+        self.move_end_effector([x - 0.2, y, 0.2])
+        self.robot.movej([0,0,0,0,0,(math.pi)/2])
+        self.move_gripper([0.15, 0, 0, 0, -30, 0, 0])
+        self.finger_close()
+        self.move_gripper([0, 0, 0.2, 0, 0, 0, 0])
 
     def close(self):
         return
 
-    def push(self):
-        return
+    def push(
+        self, x, y, z
+    ):  # x,y,z has a base on the camera. You MUST convert to the robot base
+        self.to_camera_pose()
+        coord_to_cam = np.asarray([x, y, z])
+        trans = self.robot.get_orientation()
+        tool_pose = self.robot.get_pos()
+
+        cam_len = 0.075
+
+        transnp = np.array([trans[2], -trans[1], trans[0]]).T
+
+        del_cam = np.matmul(transnp, np.array([0, 0, cam_len]).reshape(-1, 1))
+
+        cam_pose = np.array(
+            [
+                tool_pose[0] + del_cam[0],
+                tool_pose[1] + del_cam[1],
+                tool_pose[2] + del_cam[2],
+            ]
+        ).squeeze()
+        # print(trans)
+
+        trans_inverse = np.linalg.inv(transnp)
+        x, y, z = np.matmul(transnp, coord_to_cam.reshape(-1, 1)).squeeze() + cam_pose
+
+        print(x, y, z)
+        if z < 0.03:
+            z = 0.03
+        self.finger_open()
+        self.move_end_effector([x - 0.11, y, z + 0.1])
+        self.move_gripper([0.15, 0, -0.05, 0, -30, 0, 0])
+        self.finger_close()
+        self.move_gripper([-0.1, 0, 0.2, 0, 0, 0, 0])
         
     def shutdown_robot(self):
         self.robot.close()
