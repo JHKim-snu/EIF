@@ -5,7 +5,7 @@ import numpy as np
 import base64
 
 import time
-from grasp_2dbbox import realsense, grasp
+from ur_action import realsense, agent
 
 HOST = "147.47.200.155"
 PORT = 9998
