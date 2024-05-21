@@ -5,7 +5,7 @@ import numpy as np
 import base64
 
 import time
-from ur_action import realsense, agent
+from ur_action import realsense, robot
 
 HOST = "147.47.200.155"
 PORT = 9998
@@ -17,7 +17,7 @@ def main():
     cli_sock.connect((HOST, PORT))
     # rospy.init_node('visual_grounding_client', anonymous=False, disable_signals=True)
 
-    agent = grasp()
+    agent = robot()
     camera = realsense(1280, 720, 30)
     save_image_path = "./realsense.png"
     idx = 500
@@ -56,15 +56,14 @@ def main():
             BR_Y = int(bbox[3])
 
             target_action = bbox[-1]
-            
+
             # Visualize received bbox on input image
             # cv_img = cv2.rectangle(cv_img, (TL_X, TL_Y), (BR_X, BR_Y), (0, 0, 255))
             # cv_img = cv2.circle(cv_img, (PL_X, PL_Y), 8, (0, 255, 0), -1)
             # cv2.imwrite('result/vg_{}.png'.format(idx), cv_img)
             print("target bbox: {} {} {} {}".format(TL_X, TL_Y, BR_X, BR_Y))
-            
-            
-            # Manipulation 
+
+            # Manipulation
 
             point = [int((TL_X + BR_X) / 2), int((TL_Y + BR_Y) / 2)]
             # print("target pick point: {}".format(point))
@@ -88,9 +87,9 @@ def main():
             elif target_action == "PutObject":
                 agent.place(x=tx, y=ty, z=tz)
             elif target_action == "OpenObject":
-                agent.open(x=tx, y=ty, z=tz)
+                agent.open_cab(x=tx, y=ty, z=tz)
             elif target_action == "CloseObject":
-                agent.close(x=tx, y=ty, z=tz)
+                agent.close_cab(x=tx, y=ty, z=tz)
             elif target_action == "PushObject":
                 agent.push(x=tx, y=ty, z=tz)
             else:
